@@ -1,0 +1,52 @@
+version 3
+run BasicTest-0-20251002-12:09:12-26620
+attr configname BasicTest
+attr datetime 20251002-12:09:12
+attr datetimef 20251002-120912
+attr experiment BasicTest
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsd ""
+attr iterationvarsf ""
+attr measurement ""
+attr network routerfloodinglearningcapability.RouterFloodingNetwork
+attr processid 26620
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+config description "Basic flooding and learning test"
+config sim-time-limit 50s
+config network routerfloodinglearningcapability.RouterFloodingNetwork
+config sim-time-limit 100s
+config seed-set 0
+config output-scalar-file results/scalars-BasicTest-0.sca
+config output-vector-file results/vectors-BasicTest-0.vec
+config **.displaystring.debug false
+config **.router*.routerId index
+config **.pc*.deviceId "index + 1"
+
+par RouterFloodingNetwork.pc1 typename "\"routerfloodinglearningcapability.EndDevice\""
+par RouterFloodingNetwork.pc1 deviceId 1
+par RouterFloodingNetwork.pc2 typename "\"routerfloodinglearningcapability.EndDevice\""
+par RouterFloodingNetwork.pc2 deviceId 2
+par RouterFloodingNetwork.pc3 typename "\"routerfloodinglearningcapability.EndDevice\""
+par RouterFloodingNetwork.pc3 deviceId 3
+par RouterFloodingNetwork.router1 typename "\"routerfloodinglearningcapability.LearningRouter\""
+par RouterFloodingNetwork.router1 routerId 1
+par RouterFloodingNetwork.router2 typename "\"routerfloodinglearningcapability.LearningRouter\""
+par RouterFloodingNetwork.router2 routerId 2
+par RouterFloodingNetwork.router3 typename "\"routerfloodinglearningcapability.LearningRouter\""
+par RouterFloodingNetwork.router3 routerId 3
+par RouterFloodingNetwork.router4 typename "\"routerfloodinglearningcapability.LearningRouter\""
+par RouterFloodingNetwork.router4 routerId 4
+par RouterFloodingNetwork.dhcpServer typename "\"routerfloodinglearningcapability.DHCPServer\""
+par RouterFloodingNetwork.dhcpServer serverId 100
+par RouterFloodingNetwork.dnsServer typename "\"routerfloodinglearningcapability.DNSServer\""
+par RouterFloodingNetwork.dnsServer serverId 101
+par RouterFloodingNetwork.youtubeServer typename "\"routerfloodinglearningcapability.WebServer\""
+par RouterFloodingNetwork.youtubeServer serverId 200
+par RouterFloodingNetwork.youtubeServer hostname "\"youtube.com\""
+par RouterFloodingNetwork typename "\"routerfloodinglearningcapability.RouterFloodingNetwork\""
+

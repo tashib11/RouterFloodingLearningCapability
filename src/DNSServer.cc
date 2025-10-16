@@ -15,7 +15,6 @@ void DNSServer::initialize() {
 }
 
 void DNSServer::initializeDNSTable() {
-    // Initialize hostname-to-IP mappings
     dnsTable["pc1.local"] = 1;
     dnsTable["pc2.local"] = 2;
     dnsTable["pc3.local"] = 3;
@@ -31,6 +30,20 @@ void DNSServer::initializeDNSTable() {
 }
 
 void DNSServer::handleMessage(cMessage *msg) {
+    // Check if it's a BasicPacket containing DNSQuery
+    BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
+    if (pkt) {
+        cPacket *encapsulated = pkt->getEncapsulatedPacket();
+        if (encapsulated) {
+            DNSQuery *query = dynamic_cast<DNSQuery *>(encapsulated);
+            if (query) {
+                handleDNSQuery(query);
+                delete msg;
+                return;
+            }
+        }
+    }
+
     DNSQuery *query = dynamic_cast<DNSQuery *>(msg);
     if (query) {
         handleDNSQuery(query);
@@ -38,7 +51,6 @@ void DNSServer::handleMessage(cMessage *msg) {
         return;
     }
 
-    BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
     if (pkt && pkt->getDestAddr() == serverId) {
         EV << "🌐 DNS Server received packet: " << pkt->getData() << endl;
     }
@@ -48,13 +60,15 @@ void DNSServer::handleMessage(cMessage *msg) {
 
 void DNSServer::handleDNSQuery(DNSQuery *query) {
     std::string hostname = query->getHostname();
-    int sourceAddr = query->getSourceAddr();
+    int sourceAddr = query->getSourceAddr();  // This is the ROUTER that asked
     int queryId = query->getQueryId();
+    int originalPacketId = query->getOriginalPacketId();
 
     EV << "========================================" << endl;
     EV << "🔍 DNS Query Received" << endl;
-    EV << "  From: Device " << sourceAddr << endl;
+    EV << "  From: Router " << sourceAddr << endl;
     EV << "  Looking up: " << hostname << endl;
+    EV << "  Query ID: " << queryId << endl;
 
     auto it = dnsTable.find(hostname);
 
@@ -64,25 +78,21 @@ void DNSServer::handleDNSQuery(DNSQuery *query) {
         EV << "  " << hostname << " → " << resolvedAddr << endl;
         EV << "========================================" << endl;
 
-        // Send DNS Response back to source
+        // Create DNS Response
         DNSResponse *resp = new DNSResponse("dnsResponse");
         resp->setHostname(hostname.c_str());
         resp->setResolvedAddr(resolvedAddr);
-        resp->setDestAddr(sourceAddr);
+        resp->setDestAddr(sourceAddr);  // Send back to the router that asked
         resp->setQueryId(queryId);
+        resp->setOriginalPacketId(originalPacketId);
 
-        // Create a BasicPacket wrapper to send through network
-        BasicPacket *pkt = new BasicPacket("dnsResponsePacket");
-        pkt->setSourceAddr(serverId);
-        pkt->setDestAddr(sourceAddr);
-        pkt->setData("DNS_RESPONSE");
+        // **KEY FIX: Check if we're directly connected to the requesting router**
+        // If yes, send directly. If no, we need to wrap in BasicPacket for routing
 
-        // Encapsulate DNS response
-        pkt->encapsulate(resp);
+        // For simplicity, always send directly (DNS server is directly connected)
+        send(resp, "gate$o");
 
-        send(pkt, "gate$o");
-
-        EV << "📤 DNS Response sent to Device " << sourceAddr << endl;
+        EV << "📤 DNS Response sent to Router " << sourceAddr << endl;
     } else {
         EV << "❌ DNS Resolution FAILED" << endl;
         EV << "  Hostname '" << hostname << "' not found" << endl;

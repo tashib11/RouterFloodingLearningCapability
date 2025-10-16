@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for RouterFloodingLearningCapability
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep
+#  opp_makemake --
 #
 
 # Name of target to be created (-o option)

@@ -1,8 +1,8 @@
 version 3
-run BasicTest-0-20251002-12:09:12-26620
+run BasicTest-0-20251016-10:13:01-28408
 attr configname BasicTest
-attr datetime 20251002-12:09:12
-attr datetimef 20251002-120912
+attr datetime 20251016-10:13:01
+attr datetimef 20251016-101301
 attr experiment BasicTest
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network routerfloodinglearningcapability.RouterFloodingNetwork
-attr processid 26620
+attr processid 28408
 attr repetition 0
 attr replication #0
 attr resultdir results

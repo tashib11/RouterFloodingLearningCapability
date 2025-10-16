@@ -29,9 +29,11 @@ class DNSResponse;
  * {
  *     int sourceAddr;
  *     int destAddr;
+ *     string destHostname;      // NEW: For hostname-based addressing
  *     string data;
  *     int hopCount = 0;
  *     bool isFlooded = false;
+ *     bool needsDNSResolution = false;  // NEW: Flag for router to query DNS
  * }
  * </pre>
  */
@@ -40,9 +42,11 @@ class BasicPacket : public ::omnetpp::cPacket
   protected:
     int sourceAddr = 0;
     int destAddr = 0;
+    omnetpp::opp_string destHostname;
     omnetpp::opp_string data;
     int hopCount = 0;
     bool isFlooded_ = false;
+    bool needsDNSResolution = false;
 
   private:
     void copy(const BasicPacket& other);
@@ -65,6 +69,9 @@ class BasicPacket : public ::omnetpp::cPacket
     virtual int getDestAddr() const;
     virtual void setDestAddr(int destAddr);
 
+    virtual const char * getDestHostname() const;
+    virtual void setDestHostname(const char * destHostname);
+
     virtual const char * getData() const;
     virtual void setData(const char * data);
 
@@ -73,19 +80,22 @@ class BasicPacket : public ::omnetpp::cPacket
 
     virtual bool isFlooded() const;
     virtual void setIsFlooded(bool isFlooded);
+
+    virtual bool getNeedsDNSResolution() const;
+    virtual void setNeedsDNSResolution(bool needsDNSResolution);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const BasicPacket& obj) {obj.parsimPack(b);}
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, BasicPacket& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>Packet_m.msg:9</tt> by opp_msgtool.
+ * Class generated from <tt>Packet_m.msg:11</tt> by opp_msgtool.
  * <pre>
  * packet RouteInfoPacket
  * {
- *     int destAddr;          // Which destination was found
- *     int reporterAddr;      // Router reporting the route
- *     int gateToDestination; // Which gate leads to destination
+ *     int destAddr;
+ *     int reporterAddr;
+ *     int gateToDestination;
  * }
  * </pre>
  */
@@ -125,7 +135,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const RouteInfoPacket& obj)
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, RouteInfoPacket& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>Packet_m.msg:15</tt> by opp_msgtool.
+ * Class generated from <tt>Packet_m.msg:17</tt> by opp_msgtool.
  * <pre>
  * packet DHCPRequest
  * {
@@ -161,7 +171,7 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const DHCPRequest& obj) {ob
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, DHCPRequest& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>Packet_m.msg:19</tt> by opp_msgtool.
+ * Class generated from <tt>Packet_m.msg:21</tt> by opp_msgtool.
  * <pre>
  * packet DHCPResponse
  * {
@@ -202,12 +212,14 @@ inline void doParsimPacking(omnetpp::cCommBuffer *b, const DHCPResponse& obj) {o
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, DHCPResponse& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>Packet_m.msg:24</tt> by opp_msgtool.
+ * Class generated from <tt>Packet_m.msg:26</tt> by opp_msgtool.
  * <pre>
  * packet DNSQuery
  * {
  *     string hostname;
  *     int sourceAddr;
+ *     int queryId;
+ *     int originalPacketId;     // NEW: To track original packet
  * }
  * </pre>
  */
@@ -216,6 +228,8 @@ class DNSQuery : public ::omnetpp::cPacket
   protected:
     omnetpp::opp_string hostname;
     int sourceAddr = 0;
+    int queryId = 0;
+    int originalPacketId = 0;
 
   private:
     void copy(const DNSQuery& other);
@@ -237,18 +251,27 @@ class DNSQuery : public ::omnetpp::cPacket
 
     virtual int getSourceAddr() const;
     virtual void setSourceAddr(int sourceAddr);
+
+    virtual int getQueryId() const;
+    virtual void setQueryId(int queryId);
+
+    virtual int getOriginalPacketId() const;
+    virtual void setOriginalPacketId(int originalPacketId);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const DNSQuery& obj) {obj.parsimPack(b);}
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, DNSQuery& obj) {obj.parsimUnpack(b);}
 
 /**
- * Class generated from <tt>Packet_m.msg:29</tt> by opp_msgtool.
+ * Class generated from <tt>Packet_m.msg:33</tt> by opp_msgtool.
  * <pre>
  * packet DNSResponse
  * {
  *     string hostname;
- *     int ipAddr;
+ *     int resolvedAddr;
+ *     int destAddr;
+ *     int queryId;
+ *     int originalPacketId;     // NEW: To track original packet
  * }
  * </pre>
  */
@@ -256,7 +279,10 @@ class DNSResponse : public ::omnetpp::cPacket
 {
   protected:
     omnetpp::opp_string hostname;
-    int ipAddr = 0;
+    int resolvedAddr = 0;
+    int destAddr = 0;
+    int queryId = 0;
+    int originalPacketId = 0;
 
   private:
     void copy(const DNSResponse& other);
@@ -276,8 +302,17 @@ class DNSResponse : public ::omnetpp::cPacket
     virtual const char * getHostname() const;
     virtual void setHostname(const char * hostname);
 
-    virtual int getIpAddr() const;
-    virtual void setIpAddr(int ipAddr);
+    virtual int getResolvedAddr() const;
+    virtual void setResolvedAddr(int resolvedAddr);
+
+    virtual int getDestAddr() const;
+    virtual void setDestAddr(int destAddr);
+
+    virtual int getQueryId() const;
+    virtual void setQueryId(int queryId);
+
+    virtual int getOriginalPacketId() const;
+    virtual void setOriginalPacketId(int originalPacketId);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const DNSResponse& obj) {obj.parsimPack(b);}

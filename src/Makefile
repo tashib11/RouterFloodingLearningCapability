@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for RouterFloodingLearningCapability
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep
+#  opp_makemake --
 #
 
 # Name of target to be created (-o option)
@@ -31,7 +31,13 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/DHCPServer.o $O/DNSServer.o $O/EndDevice.o $O/LearningRouter.o $O/Packet_m_m.o
+OBJS = \
+    $O/DHCPServer.o \
+    $O/DNSServer.o \
+    $O/EndDevice.o \
+    $O/LearningRouter.o \
+    $O/WebServer.o \
+    $O/Packet_m_m.o
 
 # Message files
 MSGFILES = \
@@ -74,8 +80,6 @@ endif
 
 #------------------------------------------------------------------------------
 # User-supplied makefile fragment(s)
--include makefrag
-
 #------------------------------------------------------------------------------
 
 # Main target

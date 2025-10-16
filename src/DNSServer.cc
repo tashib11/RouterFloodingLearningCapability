@@ -5,22 +5,45 @@ Define_Module(DNSServer);
 void DNSServer::initialize() {
     serverId = par("serverId");
     initializeDNSTable();
-    EV << "DNS Server " << serverId << " initialized" << endl;
+    EV << "========================================" << endl;
+    EV << "🌐 DNS Server " << serverId << " initialized" << endl;
+    EV << "DNS Records loaded:" << endl;
+    for (const auto& entry : dnsTable) {
+        EV << "  " << entry.first << " → " << entry.second << endl;
+    }
+    EV << "========================================" << endl;
 }
 
 void DNSServer::initializeDNSTable() {
-    // Initialize some hostname-to-IP mappings
     dnsTable["pc1.local"] = 1;
     dnsTable["pc2.local"] = 2;
     dnsTable["pc3.local"] = 3;
     dnsTable["router1.local"] = 10;
     dnsTable["router2.local"] = 11;
     dnsTable["router3.local"] = 12;
+    dnsTable["router4.local"] = 13;
     dnsTable["dhcp.local"] = 100;
     dnsTable["dns.local"] = 101;
+    dnsTable["youtube.com"] = 200;
+    dnsTable["youtube"] = 200;
+    dnsTable["www.youtube.com"] = 200;
 }
 
 void DNSServer::handleMessage(cMessage *msg) {
+    // Check if it's a BasicPacket containing DNSQuery
+    BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
+    if (pkt) {
+        cPacket *encapsulated = pkt->getEncapsulatedPacket();
+        if (encapsulated) {
+            DNSQuery *query = dynamic_cast<DNSQuery *>(encapsulated);
+            if (query) {
+                handleDNSQuery(query);
+                delete msg;
+                return;
+            }
+        }
+    }
+
     DNSQuery *query = dynamic_cast<DNSQuery *>(msg);
     if (query) {
         handleDNSQuery(query);
@@ -28,9 +51,8 @@ void DNSServer::handleMessage(cMessage *msg) {
         return;
     }
 
-    BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
     if (pkt && pkt->getDestAddr() == serverId) {
-        EV << "DNS Server received packet: " << pkt->getData() << endl;
+        EV << "🌐 DNS Server received packet: " << pkt->getData() << endl;
     }
 
     delete msg;
@@ -38,21 +60,42 @@ void DNSServer::handleMessage(cMessage *msg) {
 
 void DNSServer::handleDNSQuery(DNSQuery *query) {
     std::string hostname = query->getHostname();
-    int sourceAddr = query->getSourceAddr();
+    int sourceAddr = query->getSourceAddr();  // This is the ROUTER that asked
+    int queryId = query->getQueryId();
+    int originalPacketId = query->getOriginalPacketId();
+
+    EV << "========================================" << endl;
+    EV << "🔍 DNS Query Received" << endl;
+    EV << "  From: Router " << sourceAddr << endl;
+    EV << "  Looking up: " << hostname << endl;
+    EV << "  Query ID: " << queryId << endl;
 
     auto it = dnsTable.find(hostname);
 
     if (it != dnsTable.end()) {
-        EV << "DNS Server resolving " << hostname
-           << " to " << it->second << endl;
+        int resolvedAddr = it->second;
+        EV << "✅ DNS Resolution SUCCESS" << endl;
+        EV << "  " << hostname << " → " << resolvedAddr << endl;
+        EV << "========================================" << endl;
 
-        DNSResponse *resp = new DNSResponse("DNSResponse");
+        // Create DNS Response
+        DNSResponse *resp = new DNSResponse("dnsResponse");
         resp->setHostname(hostname.c_str());
-        resp->setIpAddr(it->second);
+        resp->setResolvedAddr(resolvedAddr);
+        resp->setDestAddr(sourceAddr);  // Send back to the router that asked
+        resp->setQueryId(queryId);
+        resp->setOriginalPacketId(originalPacketId);
 
-        // In real implementation, would route back to source
-        delete resp;
+        // **KEY FIX: Check if we're directly connected to the requesting router**
+        // If yes, send directly. If no, we need to wrap in BasicPacket for routing
+
+        // For simplicity, always send directly (DNS server is directly connected)
+        send(resp, "gate$o");
+
+        EV << "📤 DNS Response sent to Router " << sourceAddr << endl;
     } else {
-        EV << "DNS Server: hostname " << hostname << " not found" << endl;
+        EV << "❌ DNS Resolution FAILED" << endl;
+        EV << "  Hostname '" << hostname << "' not found" << endl;
+        EV << "========================================" << endl;
     }
 }

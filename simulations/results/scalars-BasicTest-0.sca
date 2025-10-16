@@ -1,8 +1,8 @@
 version 3
-run BasicTest-0-20251002-08:31:51-3204
+run BasicTest-0-20251016-15:22:06-27516
 attr configname BasicTest
-attr datetime 20251002-08:31:51
-attr datetimef 20251002-083151
+attr datetime 20251016-15:22:06
+attr datetimef 20251016-152206
 attr experiment BasicTest
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +10,7 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network routerfloodinglearningcapability.RouterFloodingNetwork
-attr processid 3204
+attr processid 27516
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -34,14 +34,19 @@ par RouterFloodingNetwork.pc2 deviceId 2
 par RouterFloodingNetwork.pc3 typename "\"routerfloodinglearningcapability.EndDevice\""
 par RouterFloodingNetwork.pc3 deviceId 3
 par RouterFloodingNetwork.router1 typename "\"routerfloodinglearningcapability.LearningRouter\""
-par RouterFloodingNetwork.router1 routerId 1
+par RouterFloodingNetwork.router1 routerId 10
 par RouterFloodingNetwork.router2 typename "\"routerfloodinglearningcapability.LearningRouter\""
-par RouterFloodingNetwork.router2 routerId 2
+par RouterFloodingNetwork.router2 routerId 11
 par RouterFloodingNetwork.router3 typename "\"routerfloodinglearningcapability.LearningRouter\""
-par RouterFloodingNetwork.router3 routerId 3
+par RouterFloodingNetwork.router3 routerId 12
+par RouterFloodingNetwork.router4 typename "\"routerfloodinglearningcapability.LearningRouter\""
+par RouterFloodingNetwork.router4 routerId 13
 par RouterFloodingNetwork.dhcpServer typename "\"routerfloodinglearningcapability.DHCPServer\""
 par RouterFloodingNetwork.dhcpServer serverId 100
 par RouterFloodingNetwork.dnsServer typename "\"routerfloodinglearningcapability.DNSServer\""
 par RouterFloodingNetwork.dnsServer serverId 101
+par RouterFloodingNetwork.youtubeServer typename "\"routerfloodinglearningcapability.WebServer\""
+par RouterFloodingNetwork.youtubeServer serverId 200
+par RouterFloodingNetwork.youtubeServer hostname "\"youtube.com\""
 par RouterFloodingNetwork typename "\"routerfloodinglearningcapability.RouterFloodingNetwork\""
 

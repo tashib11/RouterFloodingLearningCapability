@@ -1739,7 +1739,10 @@ void DNSQuery::copy(const DNSQuery& other)
 {
     this->hostname = other.hostname;
     this->sourceAddr = other.sourceAddr;
+<<<<<<< HEAD
     this->queryId = other.queryId;
+=======
+>>>>>>> origin/main
 }
 
 void DNSQuery::parsimPack(omnetpp::cCommBuffer *b) const
@@ -1747,7 +1750,10 @@ void DNSQuery::parsimPack(omnetpp::cCommBuffer *b) const
     ::omnetpp::cPacket::parsimPack(b);
     doParsimPacking(b,this->hostname);
     doParsimPacking(b,this->sourceAddr);
+<<<<<<< HEAD
     doParsimPacking(b,this->queryId);
+=======
+>>>>>>> origin/main
 }
 
 void DNSQuery::parsimUnpack(omnetpp::cCommBuffer *b)
@@ -1755,7 +1761,10 @@ void DNSQuery::parsimUnpack(omnetpp::cCommBuffer *b)
     ::omnetpp::cPacket::parsimUnpack(b);
     doParsimUnpacking(b,this->hostname);
     doParsimUnpacking(b,this->sourceAddr);
+<<<<<<< HEAD
     doParsimUnpacking(b,this->queryId);
+=======
+>>>>>>> origin/main
 }
 
 const char * DNSQuery::getHostname() const
@@ -1778,6 +1787,7 @@ void DNSQuery::setSourceAddr(int sourceAddr)
     this->sourceAddr = sourceAddr;
 }
 
+<<<<<<< HEAD
 int DNSQuery::getQueryId() const
 {
     return this->queryId;
@@ -1788,6 +1798,8 @@ void DNSQuery::setQueryId(int queryId)
     this->queryId = queryId;
 }
 
+=======
+>>>>>>> origin/main
 class DNSQueryDescriptor : public omnetpp::cClassDescriptor
 {
   private:
@@ -1795,7 +1807,10 @@ class DNSQueryDescriptor : public omnetpp::cClassDescriptor
     enum FieldConstants {
         FIELD_hostname,
         FIELD_sourceAddr,
+<<<<<<< HEAD
         FIELD_queryId,
+=======
+>>>>>>> origin/main
     };
   public:
     DNSQueryDescriptor();
@@ -1862,7 +1877,11 @@ const char *DNSQueryDescriptor::getProperty(const char *propertyName) const
 int DNSQueryDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+<<<<<<< HEAD
     return base ? 3+base->getFieldCount() : 3;
+=======
+    return base ? 2+base->getFieldCount() : 2;
+>>>>>>> origin/main
 }
 
 unsigned int DNSQueryDescriptor::getFieldTypeFlags(int field) const
@@ -1876,9 +1895,14 @@ unsigned int DNSQueryDescriptor::getFieldTypeFlags(int field) const
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,    // FIELD_hostname
         FD_ISEDITABLE,    // FIELD_sourceAddr
+<<<<<<< HEAD
         FD_ISEDITABLE,    // FIELD_queryId
     };
     return (field >= 0 && field < 3) ? fieldTypeFlags[field] : 0;
+=======
+    };
+    return (field >= 0 && field < 2) ? fieldTypeFlags[field] : 0;
+>>>>>>> origin/main
 }
 
 const char *DNSQueryDescriptor::getFieldName(int field) const
@@ -1892,9 +1916,14 @@ const char *DNSQueryDescriptor::getFieldName(int field) const
     static const char *fieldNames[] = {
         "hostname",
         "sourceAddr",
+<<<<<<< HEAD
         "queryId",
     };
     return (field >= 0 && field < 3) ? fieldNames[field] : nullptr;
+=======
+    };
+    return (field >= 0 && field < 2) ? fieldNames[field] : nullptr;
+>>>>>>> origin/main
 }
 
 int DNSQueryDescriptor::findField(const char *fieldName) const
@@ -1903,7 +1932,10 @@ int DNSQueryDescriptor::findField(const char *fieldName) const
     int baseIndex = base ? base->getFieldCount() : 0;
     if (strcmp(fieldName, "hostname") == 0) return baseIndex + 0;
     if (strcmp(fieldName, "sourceAddr") == 0) return baseIndex + 1;
+<<<<<<< HEAD
     if (strcmp(fieldName, "queryId") == 0) return baseIndex + 2;
+=======
+>>>>>>> origin/main
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -1918,9 +1950,14 @@ const char *DNSQueryDescriptor::getFieldTypeString(int field) const
     static const char *fieldTypeStrings[] = {
         "string",    // FIELD_hostname
         "int",    // FIELD_sourceAddr
+<<<<<<< HEAD
         "int",    // FIELD_queryId
     };
     return (field >= 0 && field < 3) ? fieldTypeStrings[field] : nullptr;
+=======
+    };
+    return (field >= 0 && field < 2) ? fieldTypeStrings[field] : nullptr;
+>>>>>>> origin/main
 }
 
 const char **DNSQueryDescriptor::getFieldPropertyNames(int field) const
@@ -2005,7 +2042,10 @@ std::string DNSQueryDescriptor::getFieldValueAsString(omnetpp::any_ptr object, i
     switch (field) {
         case FIELD_hostname: return oppstring2string(pp->getHostname());
         case FIELD_sourceAddr: return long2string(pp->getSourceAddr());
+<<<<<<< HEAD
         case FIELD_queryId: return long2string(pp->getQueryId());
+=======
+>>>>>>> origin/main
         default: return "";
     }
 }
@@ -2024,7 +2064,10 @@ void DNSQueryDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int fiel
     switch (field) {
         case FIELD_hostname: pp->setHostname((value)); break;
         case FIELD_sourceAddr: pp->setSourceAddr(string2long(value)); break;
+<<<<<<< HEAD
         case FIELD_queryId: pp->setQueryId(string2long(value)); break;
+=======
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'DNSQuery'", field);
     }
 }
@@ -2041,7 +2084,10 @@ omnetpp::cValue DNSQueryDescriptor::getFieldValue(omnetpp::any_ptr object, int f
     switch (field) {
         case FIELD_hostname: return pp->getHostname();
         case FIELD_sourceAddr: return pp->getSourceAddr();
+<<<<<<< HEAD
         case FIELD_queryId: return pp->getQueryId();
+=======
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'DNSQuery' as cValue -- field index out of range?", field);
     }
 }
@@ -2060,7 +2106,10 @@ void DNSQueryDescriptor::setFieldValue(omnetpp::any_ptr object, int field, int i
     switch (field) {
         case FIELD_hostname: pp->setHostname(value.stringValue()); break;
         case FIELD_sourceAddr: pp->setSourceAddr(omnetpp::checked_int_cast<int>(value.intValue())); break;
+<<<<<<< HEAD
         case FIELD_queryId: pp->setQueryId(omnetpp::checked_int_cast<int>(value.intValue())); break;
+=======
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'DNSQuery'", field);
     }
 }
@@ -2134,27 +2183,39 @@ DNSResponse& DNSResponse::operator=(const DNSResponse& other)
 void DNSResponse::copy(const DNSResponse& other)
 {
     this->hostname = other.hostname;
+<<<<<<< HEAD
     this->resolvedAddr = other.resolvedAddr;
     this->destAddr = other.destAddr;
     this->queryId = other.queryId;
+=======
+    this->ipAddr = other.ipAddr;
+>>>>>>> origin/main
 }
 
 void DNSResponse::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
     doParsimPacking(b,this->hostname);
+<<<<<<< HEAD
     doParsimPacking(b,this->resolvedAddr);
     doParsimPacking(b,this->destAddr);
     doParsimPacking(b,this->queryId);
+=======
+    doParsimPacking(b,this->ipAddr);
+>>>>>>> origin/main
 }
 
 void DNSResponse::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
     doParsimUnpacking(b,this->hostname);
+<<<<<<< HEAD
     doParsimUnpacking(b,this->resolvedAddr);
     doParsimUnpacking(b,this->destAddr);
     doParsimUnpacking(b,this->queryId);
+=======
+    doParsimUnpacking(b,this->ipAddr);
+>>>>>>> origin/main
 }
 
 const char * DNSResponse::getHostname() const
@@ -2167,6 +2228,7 @@ void DNSResponse::setHostname(const char * hostname)
     this->hostname = hostname;
 }
 
+<<<<<<< HEAD
 int DNSResponse::getResolvedAddr() const
 {
     return this->resolvedAddr;
@@ -2195,6 +2257,16 @@ int DNSResponse::getQueryId() const
 void DNSResponse::setQueryId(int queryId)
 {
     this->queryId = queryId;
+=======
+int DNSResponse::getIpAddr() const
+{
+    return this->ipAddr;
+}
+
+void DNSResponse::setIpAddr(int ipAddr)
+{
+    this->ipAddr = ipAddr;
+>>>>>>> origin/main
 }
 
 class DNSResponseDescriptor : public omnetpp::cClassDescriptor
@@ -2203,9 +2275,13 @@ class DNSResponseDescriptor : public omnetpp::cClassDescriptor
     mutable const char **propertyNames;
     enum FieldConstants {
         FIELD_hostname,
+<<<<<<< HEAD
         FIELD_resolvedAddr,
         FIELD_destAddr,
         FIELD_queryId,
+=======
+        FIELD_ipAddr,
+>>>>>>> origin/main
     };
   public:
     DNSResponseDescriptor();
@@ -2272,7 +2348,11 @@ const char *DNSResponseDescriptor::getProperty(const char *propertyName) const
 int DNSResponseDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
+<<<<<<< HEAD
     return base ? 4+base->getFieldCount() : 4;
+=======
+    return base ? 2+base->getFieldCount() : 2;
+>>>>>>> origin/main
 }
 
 unsigned int DNSResponseDescriptor::getFieldTypeFlags(int field) const
@@ -2285,11 +2365,17 @@ unsigned int DNSResponseDescriptor::getFieldTypeFlags(int field) const
     }
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,    // FIELD_hostname
+<<<<<<< HEAD
         FD_ISEDITABLE,    // FIELD_resolvedAddr
         FD_ISEDITABLE,    // FIELD_destAddr
         FD_ISEDITABLE,    // FIELD_queryId
     };
     return (field >= 0 && field < 4) ? fieldTypeFlags[field] : 0;
+=======
+        FD_ISEDITABLE,    // FIELD_ipAddr
+    };
+    return (field >= 0 && field < 2) ? fieldTypeFlags[field] : 0;
+>>>>>>> origin/main
 }
 
 const char *DNSResponseDescriptor::getFieldName(int field) const
@@ -2302,11 +2388,17 @@ const char *DNSResponseDescriptor::getFieldName(int field) const
     }
     static const char *fieldNames[] = {
         "hostname",
+<<<<<<< HEAD
         "resolvedAddr",
         "destAddr",
         "queryId",
     };
     return (field >= 0 && field < 4) ? fieldNames[field] : nullptr;
+=======
+        "ipAddr",
+    };
+    return (field >= 0 && field < 2) ? fieldNames[field] : nullptr;
+>>>>>>> origin/main
 }
 
 int DNSResponseDescriptor::findField(const char *fieldName) const
@@ -2314,9 +2406,13 @@ int DNSResponseDescriptor::findField(const char *fieldName) const
     omnetpp::cClassDescriptor *base = getBaseClassDescriptor();
     int baseIndex = base ? base->getFieldCount() : 0;
     if (strcmp(fieldName, "hostname") == 0) return baseIndex + 0;
+<<<<<<< HEAD
     if (strcmp(fieldName, "resolvedAddr") == 0) return baseIndex + 1;
     if (strcmp(fieldName, "destAddr") == 0) return baseIndex + 2;
     if (strcmp(fieldName, "queryId") == 0) return baseIndex + 3;
+=======
+    if (strcmp(fieldName, "ipAddr") == 0) return baseIndex + 1;
+>>>>>>> origin/main
     return base ? base->findField(fieldName) : -1;
 }
 
@@ -2330,11 +2426,17 @@ const char *DNSResponseDescriptor::getFieldTypeString(int field) const
     }
     static const char *fieldTypeStrings[] = {
         "string",    // FIELD_hostname
+<<<<<<< HEAD
         "int",    // FIELD_resolvedAddr
         "int",    // FIELD_destAddr
         "int",    // FIELD_queryId
     };
     return (field >= 0 && field < 4) ? fieldTypeStrings[field] : nullptr;
+=======
+        "int",    // FIELD_ipAddr
+    };
+    return (field >= 0 && field < 2) ? fieldTypeStrings[field] : nullptr;
+>>>>>>> origin/main
 }
 
 const char **DNSResponseDescriptor::getFieldPropertyNames(int field) const
@@ -2418,9 +2520,13 @@ std::string DNSResponseDescriptor::getFieldValueAsString(omnetpp::any_ptr object
     DNSResponse *pp = omnetpp::fromAnyPtr<DNSResponse>(object); (void)pp;
     switch (field) {
         case FIELD_hostname: return oppstring2string(pp->getHostname());
+<<<<<<< HEAD
         case FIELD_resolvedAddr: return long2string(pp->getResolvedAddr());
         case FIELD_destAddr: return long2string(pp->getDestAddr());
         case FIELD_queryId: return long2string(pp->getQueryId());
+=======
+        case FIELD_ipAddr: return long2string(pp->getIpAddr());
+>>>>>>> origin/main
         default: return "";
     }
 }
@@ -2438,9 +2544,13 @@ void DNSResponseDescriptor::setFieldValueAsString(omnetpp::any_ptr object, int f
     DNSResponse *pp = omnetpp::fromAnyPtr<DNSResponse>(object); (void)pp;
     switch (field) {
         case FIELD_hostname: pp->setHostname((value)); break;
+<<<<<<< HEAD
         case FIELD_resolvedAddr: pp->setResolvedAddr(string2long(value)); break;
         case FIELD_destAddr: pp->setDestAddr(string2long(value)); break;
         case FIELD_queryId: pp->setQueryId(string2long(value)); break;
+=======
+        case FIELD_ipAddr: pp->setIpAddr(string2long(value)); break;
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'DNSResponse'", field);
     }
 }
@@ -2456,9 +2566,13 @@ omnetpp::cValue DNSResponseDescriptor::getFieldValue(omnetpp::any_ptr object, in
     DNSResponse *pp = omnetpp::fromAnyPtr<DNSResponse>(object); (void)pp;
     switch (field) {
         case FIELD_hostname: return pp->getHostname();
+<<<<<<< HEAD
         case FIELD_resolvedAddr: return pp->getResolvedAddr();
         case FIELD_destAddr: return pp->getDestAddr();
         case FIELD_queryId: return pp->getQueryId();
+=======
+        case FIELD_ipAddr: return pp->getIpAddr();
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot return field %d of class 'DNSResponse' as cValue -- field index out of range?", field);
     }
 }
@@ -2476,9 +2590,13 @@ void DNSResponseDescriptor::setFieldValue(omnetpp::any_ptr object, int field, in
     DNSResponse *pp = omnetpp::fromAnyPtr<DNSResponse>(object); (void)pp;
     switch (field) {
         case FIELD_hostname: pp->setHostname(value.stringValue()); break;
+<<<<<<< HEAD
         case FIELD_resolvedAddr: pp->setResolvedAddr(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_destAddr: pp->setDestAddr(omnetpp::checked_int_cast<int>(value.intValue())); break;
         case FIELD_queryId: pp->setQueryId(omnetpp::checked_int_cast<int>(value.intValue())); break;
+=======
+        case FIELD_ipAddr: pp->setIpAddr(omnetpp::checked_int_cast<int>(value.intValue())); break;
+>>>>>>> origin/main
         default: throw omnetpp::cRuntimeError("Cannot set field %d of class 'DNSResponse'", field);
     }
 }

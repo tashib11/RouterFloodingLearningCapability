@@ -1,7 +1,11 @@
 package routerfloodinglearningcapability;
 
+<<<<<<< HEAD
 network RouterFloodingNetwork
 {
+=======
+network RouterFloodingNetwork {
+>>>>>>> origin/main
     submodules:
         // End devices
         pc1: EndDevice {
@@ -35,11 +39,14 @@ network RouterFloodingNetwork
             @display("p=300,300");
         }
 
+<<<<<<< HEAD
         router4: LearningRouter {
             routerId = 4;
             @display("p=400,400");
         }
 
+=======
+>>>>>>> origin/main
         // Servers
         dhcpServer: DHCPServer {
             serverId = 100;
@@ -51,12 +58,15 @@ network RouterFloodingNetwork
             @display("p=450,100");
         }
 
+<<<<<<< HEAD
         youtubeServer: WebServer {
             serverId = 200;
             hostname = "youtube.com";
             @display("p=500,450;i=device/server2");
         }
 
+=======
+>>>>>>> origin/main
     connections:
         // Connect PCs to routers
         pc1.gate <--> router1.gate++;
@@ -67,10 +77,16 @@ network RouterFloodingNetwork
         router1.gate++ <--> router2.gate++;
         router2.gate++ <--> router3.gate++;
         router3.gate++ <--> router1.gate++;
+<<<<<<< HEAD
         router3.gate++ <--> router4.gate++;
+=======
+>>>>>>> origin/main
 
         // Connect servers
         dhcpServer.gate <--> router1.gate++;
         dnsServer.gate <--> router2.gate++;
+<<<<<<< HEAD
         youtubeServer.gate <--> router4.gate++;
+=======
+>>>>>>> origin/main
 }

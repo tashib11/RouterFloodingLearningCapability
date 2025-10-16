@@ -24,12 +24,19 @@ packet DHCPResponse {
 packet DNSQuery {
     string hostname;
     int sourceAddr;
+<<<<<<< HEAD
     int queryId;
+=======
+>>>>>>> origin/main
 }
 
 packet DNSResponse {
     string hostname;
+<<<<<<< HEAD
     int resolvedAddr;
     int destAddr;
     int queryId;
+=======
+    int ipAddr;
+>>>>>>> origin/main
 }

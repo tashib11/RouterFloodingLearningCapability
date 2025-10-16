@@ -1,8 +1,15 @@
 version 3
+<<<<<<< HEAD
 run BasicTest-0-20251002-12:09:12-26620
 attr configname BasicTest
 attr datetime 20251002-12:09:12
 attr datetimef 20251002-120912
+=======
+run BasicTest-0-20251002-08:31:51-3204
+attr configname BasicTest
+attr datetime 20251002-08:31:51
+attr datetimef 20251002-083151
+>>>>>>> origin/main
 attr experiment BasicTest
 attr inifile omnetpp.ini
 attr iterationvars ""
@@ -10,7 +17,11 @@ attr iterationvarsd ""
 attr iterationvarsf ""
 attr measurement ""
 attr network routerfloodinglearningcapability.RouterFloodingNetwork
+<<<<<<< HEAD
 attr processid 26620
+=======
+attr processid 3204
+>>>>>>> origin/main
 attr repetition 0
 attr replication #0
 attr resultdir results
@@ -24,7 +35,11 @@ config seed-set 0
 config output-scalar-file results/scalars-BasicTest-0.sca
 config output-vector-file results/vectors-BasicTest-0.vec
 config **.displaystring.debug false
+<<<<<<< HEAD
 config **.router*.routerId index
+=======
+config **.router*.routerId "index + 10"
+>>>>>>> origin/main
 config **.pc*.deviceId "index + 1"
 
 par RouterFloodingNetwork.pc1 typename "\"routerfloodinglearningcapability.EndDevice\""
@@ -39,14 +54,20 @@ par RouterFloodingNetwork.router2 typename "\"routerfloodinglearningcapability.L
 par RouterFloodingNetwork.router2 routerId 2
 par RouterFloodingNetwork.router3 typename "\"routerfloodinglearningcapability.LearningRouter\""
 par RouterFloodingNetwork.router3 routerId 3
+<<<<<<< HEAD
 par RouterFloodingNetwork.router4 typename "\"routerfloodinglearningcapability.LearningRouter\""
 par RouterFloodingNetwork.router4 routerId 4
+=======
+>>>>>>> origin/main
 par RouterFloodingNetwork.dhcpServer typename "\"routerfloodinglearningcapability.DHCPServer\""
 par RouterFloodingNetwork.dhcpServer serverId 100
 par RouterFloodingNetwork.dnsServer typename "\"routerfloodinglearningcapability.DNSServer\""
 par RouterFloodingNetwork.dnsServer serverId 101
+<<<<<<< HEAD
 par RouterFloodingNetwork.youtubeServer typename "\"routerfloodinglearningcapability.WebServer\""
 par RouterFloodingNetwork.youtubeServer serverId 200
 par RouterFloodingNetwork.youtubeServer hostname "\"youtube.com\""
+=======
+>>>>>>> origin/main
 par RouterFloodingNetwork typename "\"routerfloodinglearningcapability.RouterFloodingNetwork\""
 

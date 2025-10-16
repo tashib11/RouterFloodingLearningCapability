@@ -208,7 +208,10 @@ inline void doParsimUnpacking(omnetpp::cCommBuffer *b, DHCPResponse& obj) {obj.p
  * {
  *     string hostname;
  *     int sourceAddr;
+<<<<<<< HEAD
  *     int queryId;
+=======
+>>>>>>> origin/main
  * }
  * </pre>
  */
@@ -217,7 +220,10 @@ class DNSQuery : public ::omnetpp::cPacket
   protected:
     omnetpp::opp_string hostname;
     int sourceAddr = 0;
+<<<<<<< HEAD
     int queryId = 0;
+=======
+>>>>>>> origin/main
 
   private:
     void copy(const DNSQuery& other);
@@ -239,23 +245,34 @@ class DNSQuery : public ::omnetpp::cPacket
 
     virtual int getSourceAddr() const;
     virtual void setSourceAddr(int sourceAddr);
+<<<<<<< HEAD
 
     virtual int getQueryId() const;
     virtual void setQueryId(int queryId);
+=======
+>>>>>>> origin/main
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const DNSQuery& obj) {obj.parsimPack(b);}
 inline void doParsimUnpacking(omnetpp::cCommBuffer *b, DNSQuery& obj) {obj.parsimUnpack(b);}
 
 /**
+<<<<<<< HEAD
  * Class generated from <tt>Packet_m.msg:30</tt> by opp_msgtool.
+=======
+ * Class generated from <tt>Packet_m.msg:29</tt> by opp_msgtool.
+>>>>>>> origin/main
  * <pre>
  * packet DNSResponse
  * {
  *     string hostname;
+<<<<<<< HEAD
  *     int resolvedAddr;
  *     int destAddr;
  *     int queryId;
+=======
+ *     int ipAddr;
+>>>>>>> origin/main
  * }
  * </pre>
  */
@@ -263,9 +280,13 @@ class DNSResponse : public ::omnetpp::cPacket
 {
   protected:
     omnetpp::opp_string hostname;
+<<<<<<< HEAD
     int resolvedAddr = 0;
     int destAddr = 0;
     int queryId = 0;
+=======
+    int ipAddr = 0;
+>>>>>>> origin/main
 
   private:
     void copy(const DNSResponse& other);
@@ -285,6 +306,7 @@ class DNSResponse : public ::omnetpp::cPacket
     virtual const char * getHostname() const;
     virtual void setHostname(const char * hostname);
 
+<<<<<<< HEAD
     virtual int getResolvedAddr() const;
     virtual void setResolvedAddr(int resolvedAddr);
 
@@ -293,6 +315,10 @@ class DNSResponse : public ::omnetpp::cPacket
 
     virtual int getQueryId() const;
     virtual void setQueryId(int queryId);
+=======
+    virtual int getIpAddr() const;
+    virtual void setIpAddr(int ipAddr);
+>>>>>>> origin/main
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const DNSResponse& obj) {obj.parsimPack(b);}

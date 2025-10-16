@@ -4,16 +4,22 @@ Define_Module(EndDevice);
 
 void EndDevice::initialize() {
     deviceId = par("deviceId");
+<<<<<<< HEAD
     dnsServerAddr = 101;  // DNS server address
     nextQueryId = 1;
 
+=======
+>>>>>>> origin/main
     EV << "🖥️  End Device " << deviceId << " initialized" << endl;
 
     // Schedule test packet sending
     if (deviceId == 1) { // Only device 1 sends test packets
         scheduleAt(simTime() + uniform(1.0, 2.0), new cMessage("sendPacket"));
+<<<<<<< HEAD
         // Schedule DNS query for youtube.com
         scheduleAt(simTime() + 5.0, new cMessage("queryYoutube"));
+=======
+>>>>>>> origin/main
     }
 }
 
@@ -22,6 +28,7 @@ void EndDevice::handleMessage(cMessage *msg) {
         if (strcmp(msg->getName(), "sendPacket") == 0) {
             sendTestPacket();
             // Schedule next packet
+<<<<<<< HEAD
             scheduleAt(simTime() + uniform(10.0, 15.0), msg);
             return;
         }
@@ -37,11 +44,16 @@ void EndDevice::handleMessage(cMessage *msg) {
         }
 
         delete msg;
+=======
+            scheduleAt(simTime() + uniform(8.0, 12.0), msg);
+        }
+>>>>>>> origin/main
         return;
     }
 
     BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
     if (pkt) {
+<<<<<<< HEAD
         // Check if this is a DNS response
         if (pkt->getEncapsulatedPacket()) {
             DNSResponse *dnsResp = dynamic_cast<DNSResponse *>(pkt->getEncapsulatedPacket());
@@ -62,6 +74,10 @@ void EndDevice::handleMessage(cMessage *msg) {
             EV << "✉️  Device " << deviceId << " RECEIVED packet from Device "
                << pkt->getSourceAddr() << ": " << pkt->getData() << endl;
         }
+=======
+        EV << "✉️  Device " << deviceId << " RECEIVED packet from Device "
+           << pkt->getSourceAddr() << ": " << pkt->getData() << endl;
+>>>>>>> origin/main
     }
 
     delete msg;
@@ -85,6 +101,7 @@ void EndDevice::sendTestPacket() {
     // Cycle through destinations (2 and 3)
     targetDest = (targetDest == 2) ? 3 : 2;
 }
+<<<<<<< HEAD
 
 void EndDevice::sendDNSQuery(const char* hostname) {
     // Check cache first
@@ -153,3 +170,5 @@ void EndDevice::sendDataToServer(int serverAddr, const char* hostname) {
 
     send(pkt, "gate$o");
 }
+=======
+>>>>>>> origin/main

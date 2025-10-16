@@ -1,15 +1,17 @@
 packet BasicPacket {
     int sourceAddr;
     int destAddr;
+    string destHostname;      // NEW: For hostname-based addressing
     string data;
     int hopCount = 0;
     bool isFlooded = false;
+    bool needsDNSResolution = false;  // NEW: Flag for router to query DNS
 }
 
 packet RouteInfoPacket {
-    int destAddr;          // Which destination was found
-    int reporterAddr;      // Router reporting the route
-    int gateToDestination; // Which gate leads to destination
+    int destAddr;
+    int reporterAddr;
+    int gateToDestination;
 }
 
 packet DHCPRequest {
@@ -24,19 +26,14 @@ packet DHCPResponse {
 packet DNSQuery {
     string hostname;
     int sourceAddr;
-<<<<<<< HEAD
     int queryId;
-=======
->>>>>>> origin/main
+    int originalPacketId;     // NEW: To track original packet
 }
 
 packet DNSResponse {
     string hostname;
-<<<<<<< HEAD
     int resolvedAddr;
     int destAddr;
     int queryId;
-=======
-    int ipAddr;
->>>>>>> origin/main
+    int originalPacketId;     // NEW: To track original packet
 }

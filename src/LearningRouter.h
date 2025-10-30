@@ -12,7 +12,7 @@ class LearningRouter : public cSimpleModule {
 private:
     std::map<int, int> routingTable;
     std::map<int, BasicPacket*> pendingPackets;
-    std::set<long> seenPackets;  // NEW: Track packet IDs we've already processed
+    std::set<std::string> seenPackets;  // CHANGED: Use string key instead of long
     int routerId;
     int dnsServerAddr;
     int nextQueryId;
@@ -29,8 +29,9 @@ protected:
     bool isDirectlyConnected(int addr, int &gateIndex);
     void queryDNS(BasicPacket *pkt);
     void handleDNSResponse(DNSResponse *resp);
-    bool hasSeenPacket(long packetId);  // NEW
-    void markPacketAsSeen(long packetId);  // NEW
+    bool hasSeenPacket(std::string packetKey);
+        void markPacketAsSeen(std::string packetKey);
+        std::string getPacketKey(BasicPacket *pkt);
 };
 
 #endif

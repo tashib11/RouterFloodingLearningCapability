@@ -6,7 +6,7 @@ void DNSServer::initialize() {
     serverId = par("serverId");
     initializeDNSTable();
     EV << "========================================" << endl;
-    EV << "🌐 DNS Server " << serverId << " initialized" << endl;
+    EV << " DNS Server " << serverId << " initialized" << endl;
     EV << "DNS Records loaded:" << endl;
     for (const auto& entry : dnsTable) {
         EV << "  " << entry.first << " → " << entry.second << endl;
@@ -52,7 +52,7 @@ void DNSServer::handleMessage(cMessage *msg) {
     }
 
     if (pkt && pkt->getDestAddr() == serverId) {
-        EV << "🌐 DNS Server received packet: " << pkt->getData() << endl;
+        EV << " DNS Server received packet: " << pkt->getData() << endl;
     }
 
     delete msg;
@@ -65,16 +65,16 @@ void DNSServer::handleDNSQuery(DNSQuery *query) {
     int originalPacketId = query->getOriginalPacketId();
 
     EV << "========================================" << endl;
-    EV << "🔍 DNS Query Received" << endl;
-    EV << "  From: Router " << sourceAddr << endl;
-    EV << "  Looking up: " << hostname << endl;
+    EV << " DNS Query Received" << endl;
+    EV << "  From: Main source Router " << sourceAddr << endl;
+    EV << "  Looking for: " << hostname << endl;
     EV << "  Query ID: " << queryId << endl;
 
     auto it = dnsTable.find(hostname);
 
     if (it != dnsTable.end()) {
         int resolvedAddr = it->second;
-        EV << "✅ DNS Resolution SUCCESS" << endl;
+        EV << " DNS Resolution SUCCESS" << endl;
         EV << "  " << hostname << " → " << resolvedAddr << endl;
         EV << "========================================" << endl;
 
@@ -86,15 +86,14 @@ void DNSServer::handleDNSQuery(DNSQuery *query) {
         resp->setQueryId(queryId);
         resp->setOriginalPacketId(originalPacketId);
 
-        // **KEY FIX: Check if we're directly connected to the requesting router**
-        // If yes, send directly. If no, we need to wrap in BasicPacket for routing
 
-        // For simplicity, always send directly (DNS server is directly connected)
+
+
         send(resp, "gate$o");
 
-        EV << "📤 DNS Response sent to Router " << sourceAddr << endl;
+        EV << " DNS Response sent to Router " << sourceAddr << endl;
     } else {
-        EV << "❌ DNS Resolution FAILED" << endl;
+        EV << " DNS Resolution FAILED" << endl;
         EV << "  Hostname '" << hostname << "' not found" << endl;
         EV << "========================================" << endl;
     }

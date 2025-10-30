@@ -1,12 +1,13 @@
 #include "LearningRouter.h"
+#include <sstream>
 
-Define_Module(LearningRouter);
+Define_Module(LearningRouter);//connects the C++ class LearningRouter with the .ned definition
 
 void LearningRouter::initialize() {
     routerId = par("routerId");
     dnsServerAddr = 101;
     nextQueryId = 1;
-    seenPackets.clear();  // NEW: Clear seen packets set
+    seenPackets.clear();
 
     EV << "========================================" << endl;
     EV << "Learning Router " << routerId << " initialized" << endl;
@@ -40,7 +41,7 @@ void LearningRouter::handleMessage(cMessage *msg) {
             if (it != routingTable.end()) {
                 send(dnsResp, "gate$o", it->second);
             } else {
-                EV << "⚠ Router " << routerId << " doesn't know route to Router "
+                EV << " Router " << routerId << " doesn't know route to Router "
                    << destRouter << ", dropping DNS response" << endl;
                 delete dnsResp;
             }
@@ -63,17 +64,18 @@ void LearningRouter::handleMessage(cMessage *msg) {
         return;
     }
 
-    // **NEW: Check if we've already seen this packet**
-    long packetId = pkt->getId();
-    if (hasSeenPacket(packetId)) {
-        EV << "🚫 Router " << routerId << " already processed packet ID " << packetId
-           << " - DROPPING duplicate to prevent loop" << endl;
+    // **UPDATED: Check if we've already seen this packet using unique key**
+    std::string packetKey = getPacketKey(pkt);
+    if (hasSeenPacket(packetKey)) {
+        EV << " Router " << routerId << " already processed packet [" << packetKey
+           << "] - DROPPING duplicate to prevent loop" << endl;
         delete pkt;
         return;
     }
 
-    // **NEW: Mark this packet as seen**
-    markPacketAsSeen(packetId);
+    //  Mark this packet as seen using unique key
+    markPacketAsSeen(packetKey);
+    EV << " Router " << routerId << " processing packet [" << packetKey << "]" << endl;
 
     int arrivalGate = pkt->getArrivalGate()->getIndex();
     int sourceAddr = pkt->getSourceAddr();
@@ -82,13 +84,13 @@ void LearningRouter::handleMessage(cMessage *msg) {
     // Learn source route
     if (routingTable.find(sourceAddr) == routingTable.end()) {
         learnRoute(sourceAddr, arrivalGate);
-        EV << "✓ Router " << routerId << " learned: Destination " << sourceAddr
+        EV << " Router " << routerId << " learned: Destination " << sourceAddr
            << " → Gate " << arrivalGate << " [Source learning]" << endl;
     }
 
     // Check if packet needs DNS resolution
     if (pkt->getNeedsDNSResolution() && strlen(pkt->getDestHostname()) > 0) {
-        EV << "🔍 Router " << routerId << " detected hostname: "
+        EV << " Router " << routerId << " detected hostname: "
            << pkt->getDestHostname() << " - Querying DNS..." << endl;
         queryDNS(pkt);
         return;
@@ -99,7 +101,7 @@ void LearningRouter::handleMessage(cMessage *msg) {
     if (isDirectlyConnected(destAddr, destGate)) {
         if (routingTable.find(destAddr) == routingTable.end()) {
             learnRoute(destAddr, destGate);
-            EV << "✓✓ Router " << routerId << " FOUND destination " << destAddr
+            EV << " Router " << routerId << " FOUND destination " << destAddr
                << " → Gate " << destGate << " [DIRECTLY CONNECTED!]" << endl;
             sendRouteInfo(destAddr, destGate, arrivalGate);
         }
@@ -113,18 +115,29 @@ void LearningRouter::handleMessage(cMessage *msg) {
     forwardPacket(pkt);
 }
 
-// **NEW FUNCTION: Check if packet has been seen**
-bool LearningRouter::hasSeenPacket(long packetId) {
-    return seenPackets.find(packetId) != seenPackets.end();
+// NEW FUNCTION: Generate unique key for a packet
+std::string LearningRouter::getPacketKey(BasicPacket *pkt) {
+    // Create unique key: "source-dest-name-treeid"
+    // TreeId is OMNeT++'s internal identifier
+    std::ostringstream key;
+    key << pkt->getSourceAddr() << "-"
+        << pkt->getDestAddr() << "-"
+        << pkt->getName() << "-"
+        << pkt->getTreeId();
+    return key.str();//as a packet key
 }
 
-// **NEW FUNCTION: Mark packet as seen**
-void LearningRouter::markPacketAsSeen(long packetId) {
-    seenPackets.insert(packetId);
+//  Check if packet has been seen
+bool LearningRouter::hasSeenPacket(std::string packetKey) {
+    return seenPackets.find(packetKey) != seenPackets.end();//set<string>seenPackets
+}
 
-    // Optional: Limit memory usage by keeping only last 1000 packets
+// **UPDATED FUNCTION: Mark packet as seen**
+void LearningRouter::markPacketAsSeen(std::string packetKey) {
+    seenPackets.insert(packetKey);
+
+    // Optional: Limit memory usage
     if (seenPackets.size() > 1000) {
-        // Remove oldest entries (for production use, consider a proper LRU cache)
         seenPackets.clear();
     }
 }
@@ -167,11 +180,11 @@ void LearningRouter::forwardPacket(BasicPacket *pkt) {
     if (it != routingTable.end()) {
         EV << "→ Router " << routerId << " forwarding packet (Src:" << sourceAddr
            << " → Dest:" << destAddr << ") via Gate " << it->second
-           << " [USING LEARNED ROUTE]" << endl;
+           << " Using Routing table" << endl;
 
         send(pkt, "gate$o", it->second);
     } else {
-        EV << "⚡ Router " << routerId << " FLOODING packet (Src:" << sourceAddr
+        EV << " Router " << routerId << " FLOODING packet (Src:" << sourceAddr
            << " → Dest:" << destAddr << ") [DESTINATION UNKNOWN]" << endl;
 
         pkt->setIsFlooded(true);
@@ -184,7 +197,7 @@ void LearningRouter::floodPacket(BasicPacket *pkt, int arrivalGate) {
     pkt->setHopCount(pkt->getHopCount() + 1);
 
     if (pkt->getHopCount() > 10) {
-        EV << "⚠ Packet hop count exceeded, dropping" << endl;
+        EV << " Packet hop count exceeded, dropping" << endl;
         delete pkt;
         return;
     }
@@ -194,14 +207,14 @@ void LearningRouter::floodPacket(BasicPacket *pkt, int arrivalGate) {
 
     for (int i = 0; i < numGates; i++) {
         if (i != arrivalGate && gate("gate$o", i)->isConnected()) {
-            BasicPacket *copy = pkt->dup();
+            BasicPacket *copy = pkt->dup();//a copy of the packet for each gate,Because OMNeT++ messages can’t be reused once sent.
             send(copy, "gate$o", i);
             floodedCount++;
-            EV << "  ⤷ Flooding copy via Gate " << i << endl;
+            EV << "  Flooding copy via Gate " << i << endl;
         }
     }
 
-    EV << "  📊 Total flooded: " << floodedCount << " gate(s) (excluded arrival gate "
+    EV << " Total flooded: " << floodedCount << " gate(s) (excluded arrival gate "
        << arrivalGate << ")" << endl;
 
     delete pkt;
@@ -211,8 +224,9 @@ void LearningRouter::learnRoute(int destAddr, int gateIndex) {
     routingTable[destAddr] = gateIndex;
 }
 
+//ACK
 void LearningRouter::sendRouteInfo(int destAddr, int gateToDestination, int backGate) {
-    EV << "📢 Router " << routerId << " sending ACK back: Found Destination "
+    EV << " Router " << routerId << " sending ACK back: Found Destination "
        << destAddr << " on my Gate " << gateToDestination << endl;
 
     RouteInfoPacket *info = new RouteInfoPacket("routeACK");
@@ -234,7 +248,7 @@ void LearningRouter::sendRouteInfo(int destAddr, int gateToDestination, int back
         broadcastInfo->setGateToDestination(gateToDestination);
 
         send(broadcastInfo, "gate$o", i);
-        EV << "  ⤷ Broadcasting to Gate " << i << endl;
+        EV << "  Broadcasting to Gate " << i << endl;
     }
 }
 
@@ -245,7 +259,7 @@ void LearningRouter::handleRouteInfo(RouteInfoPacket *routeInfo) {
 
     if (routingTable.find(destAddr) == routingTable.end()) {
         learnRoute(destAddr, arrivalGate);
-        EV << "📚 Router " << routerId << " learned from ACK: Destination "
+        EV << "Router " << routerId << " learned from ACK: Destination "
            << destAddr << " → Gate " << arrivalGate
            << " (via Router " << reporterAddr << ")" << endl;
 
@@ -261,7 +275,7 @@ void LearningRouter::handleRouteInfo(RouteInfoPacket *routeInfo) {
             forwardInfo->setGateToDestination(arrivalGate);
 
             send(forwardInfo, "gate$o", i);
-            EV << "  ⤷ Forwarding ACK to Gate " << i << endl;
+            EV << "   Forwarding ACK to Gate " << i << endl;
         }
     }
 }
@@ -274,7 +288,7 @@ void LearningRouter::queryDNS(BasicPacket *pkt) {
     pendingPackets[packetId] = pkt->dup();
 
     EV << "========================================" << endl;
-    EV << "🌐 Router " << routerId << " querying DNS for hostname: "
+    EV << " Router " << routerId << " querying DNS for hostname: "
        << pkt->getDestHostname() << endl;
     EV << "  Storing original packet (ID: " << packetId << ") for later forwarding" << endl;
     EV << "========================================" << endl;
@@ -289,11 +303,11 @@ void LearningRouter::queryDNS(BasicPacket *pkt) {
     // Check if we know route to DNS server
     auto it = routingTable.find(dnsServerAddr);
     if (it != routingTable.end()) {
-        EV << "→ Router " << routerId << " sending DNS query to DNS Server "
+        EV << "Router " << routerId << " sending DNS query to DNS Server "
            << dnsServerAddr << " via Gate " << it->second << endl;
         send(query, "gate$o", it->second);
     } else {
-        EV << "⚡ Router " << routerId << " flooding DNS query to find DNS Server" << endl;
+        EV << " Router " << routerId << " flooding DNS query to find DNS Server" << endl;
 
         // Wrap in BasicPacket for flooding
         BasicPacket *dnsQueryPkt = new BasicPacket("dnsQueryPacket");
@@ -314,16 +328,16 @@ void LearningRouter::handleDNSResponse(DNSResponse *resp) {
     std::string hostname = resp->getHostname();
     int packetId = resp->getOriginalPacketId();
 
-    // Learn route to DNS server if we haven't already
+
     int arrivalGate = resp->getArrivalGate()->getIndex();
     if (routingTable.find(101) == routingTable.end()) {
         learnRoute(101, arrivalGate);
-        EV << "✓ Router " << routerId << " learned DNS Server route: Destination 101 → Gate "
+        EV << " Router " << routerId << " learned DNS Server route: Destination 101 → Gate "
            << arrivalGate << endl;
     }
 
     EV << "========================================" << endl;
-    EV << "✅ Router " << routerId << " received DNS response" << endl;
+    EV << "Router " << routerId << " received DNS response" << endl;
     EV << "  Hostname: " << hostname << " → IP: " << resolvedAddr << endl;
     EV << "  Original packet ID: " << packetId << endl;
     EV << "========================================" << endl;
@@ -338,7 +352,7 @@ void LearningRouter::handleDNSResponse(DNSResponse *resp) {
         originalPkt->setNeedsDNSResolution(false);
         originalPkt->setDestHostname("");
 
-        EV << "📤 Router " << routerId << " NOW forwarding packet to YouTube (IP: "
+        EV << "Router " << routerId << " NOW forwarding packet to YouTube (IP: "
            << resolvedAddr << ")" << endl;
 
         // Remove from pending
@@ -346,37 +360,35 @@ void LearningRouter::handleDNSResponse(DNSResponse *resp) {
 
         auto routeIt = routingTable.find(resolvedAddr);
         if (routeIt == routingTable.end()) {
-            EV << "⚡ Router " << routerId << " doesn't know route to " << resolvedAddr
+            EV << " Router " << routerId << " doesn't know route to " << resolvedAddr
                << " - FLOODING to find YouTube server!" << endl;
         }
 
-        // Now forward the packet with the resolved IP
+        // forwarding with the resolved IP
         forwardPacket(originalPkt);
     } else {
-        EV << "⚠ Router " << routerId << " couldn't find original packet ID: "
+        EV << " Router " << routerId << " couldn't find original packet ID: "
            << packetId << endl;
     }
 }
 
 void LearningRouter::printRoutingTable() {
     EV << endl;
-    EV << "╔════════════════════════════════════════╗" << endl;
-    EV << "║  ROUTING TABLE - Router " << routerId << "            ║" << endl;
-    EV << "╠════════════════════════════════════════╣" << endl;
+    EV << "==========================================" << endl;
+    EV << "|| ROUTING TABLE - Router " << routerId << "            ||" << endl;
+    EV << "==========================================" << endl;
 
     if (routingTable.empty()) {
-        EV << "║  (Empty - No routes learned yet)       ║" << endl;
+        EV << "||  (Empty - No routes learned yet)       ||" << endl;
     } else {
         for (const auto& entry : routingTable) {
-            EV << "║  Destination " << entry.first << " → Gate " << entry.second;
+            EV << "|  Destination " << entry.first << " → Gate " << entry.second;
             int spaces = 18 - (int)std::to_string(entry.first).length() -
                         (int)std::to_string(entry.second).length();
             for (int i = 0; i < spaces; i++) EV << " ";
-            EV << "║" << endl;
+            EV << "|" << endl;
         }
     }
 
-    EV << "║  Seen packets: " << seenPackets.size() << "                     ║" << endl;
-    EV << "╚════════════════════════════════════════╝" << endl;
-    EV << endl;
+
 }

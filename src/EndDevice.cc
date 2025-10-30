@@ -5,7 +5,7 @@ Define_Module(EndDevice);
 void EndDevice::initialize() {
     deviceId = par("deviceId");
 
-    EV << "🖥️  End Device " << deviceId << " initialized" << endl;
+    EV << " PC" << deviceId << " initialized" << endl;
 
     if (deviceId == 1) {
         scheduleAt(simTime() + uniform(1.0, 2.0), new cMessage("sendPacket"));
@@ -24,7 +24,7 @@ void EndDevice::handleMessage(cMessage *msg) {
         if (strcmp(msg->getName(), "accessYoutube") == 0) {
             EV << endl;
             EV << "========================================" << endl;
-            EV << "🎬 Device " << deviceId << " wants to access YouTube!" << endl;
+            EV << " PC " << deviceId << " wants to access YouTube" << endl;
             EV << "  Sending packet to 'youtube.com'" << endl;
             EV << "========================================" << endl;
 
@@ -47,13 +47,13 @@ void EndDevice::handleMessage(cMessage *msg) {
 
     BasicPacket *pkt = dynamic_cast<BasicPacket *>(msg);
     if (pkt) {
-        if (strcmp(pkt->getData(), "VIDEO_STREAM_DATA") == 0) {
+        if (strcmp(pkt->getData(), "VIDEO_DATA") == 0) {
             EV << "========================================" << endl;
-            EV << "🎬 Device " << deviceId << " received YouTube video!" << endl;
-            EV << "  Streaming content from server " << pkt->getSourceAddr() << endl;
+            EV << " PC " << deviceId << " received YouTube video" << endl;
+            EV << "  from Youtube server " << pkt->getSourceAddr() << endl;
             EV << "========================================" << endl;
         } else {
-            EV << "✉️  Device " << deviceId << " RECEIVED packet from Device "
+            EV << "  PC " << deviceId << " RECEIVED packet from Device "
                << pkt->getSourceAddr() << ": " << pkt->getData() << endl;
         }
     }
@@ -67,10 +67,10 @@ void EndDevice::sendTestPacket() {
     BasicPacket *pkt = new BasicPacket("dataPacket");
     pkt->setSourceAddr(deviceId);
     pkt->setDestAddr(targetDest);
-    pkt->setData("Hello from PC");
+    pkt->setData("Hello from PC 1");
 
     EV << endl;
-    EV << "📤 Device " << deviceId << " SENDING packet to Device "
+    EV << "PC " << deviceId << " SENDING packet to PC "
        << targetDest << endl;
 
     send(pkt, "gate$o");

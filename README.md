@@ -96,7 +96,7 @@ The project contains four core simulation modules:
 </p>
 
 <p align="center">
-  <img src="demo/output.png" width="600">
+  <img src="demo/router.png" width="600">
 </p>
 
 🧩 The animation shows:
